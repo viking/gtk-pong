@@ -1,5 +1,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include "database.h"
 
 int
 main(argc, argv)
@@ -35,6 +36,11 @@ main(argc, argv)
   /* Connect signal handlers to the constructed widgets */
   window = gtk_builder_get_object(builder, "window");
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+  database *db = database_open();
+  if (db != NULL) {
+    database_close(db);
+  }
 
   gtk_main();
 
