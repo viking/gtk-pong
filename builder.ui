@@ -1,0 +1,126 @@
+<interface>
+  <object id="window" class="GtkWindow">
+    <property name="visible">true</property>
+    <property name="title">Pong</property>
+    <property name="default-width">1600</property>
+    <property name="default-height">900</property>
+    <child>
+      <object id="main" class="GtkVBox">
+        <property name="visible">true</property>
+        <property name="spacing">20</property>
+        <child>
+          <object id="logo" class="GtkImage">
+            <property name="name">logo</property>
+            <property name="visible">true</property>
+            <property name="file">logo.png</property>
+            <property name="hexpand">true</property>
+          </object>
+          <packing>
+            <property name="expand">false</property>
+          </packing>
+        </child>
+        <child>
+          <object id="stats-heading" class="GtkHBox">
+            <property name="visible">true</property>
+            <property name="hexpand">true</property>
+            <child>
+              <object id="stats-sep-1" class="GtkHSeparator">
+                <property name="visible">true</property>
+                <property name="hexpand">true</property>
+              </object>
+              <packing>
+                <property name="expand">false</property>
+              </packing>
+            </child>
+            <child>
+              <object id="stats-label" class="GtkLabel">
+                <property name="name">stats-label</property>
+                <property name="visible">true</property>
+                <property name="label">STATS</property>
+              </object>
+              <packing>
+                <property name="expand">false</property>
+              </packing>
+            </child>
+            <child>
+              <object id="stats-sep-2" class="GtkHSeparator">
+                <property name="visible">true</property>
+                <property name="hexpand">true</property>
+              </object>
+              <packing>
+                <property name="expand">false</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">false</property>
+          </packing>
+        </child>
+        <child>
+          <object id="stats-box" class="GtkHBox">
+            <property name="visible">true</property>
+            <property name="vexpand">true</property>
+            <property name="homogeneous">true</property>
+            <child>
+              <object id="leaderboard-box" class="GtkVBox">
+                <property name="visible">true</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object id="leaderboard-label" class="GtkLabel">
+                    <property name="visible">true</property>
+                    <property name="label">LEADERBOARD</property>
+                  </object>
+                  <packing>
+                    <property name="expand">false</property>
+                  </packing>
+                </child>
+                <child>
+                  <object id="leader-label-1" class="GtkLabel">
+                    <property name="visible">true</property>
+                    <property name="label">1. Viking</property>
+                  </object>
+                  <packing>
+                    <property name="expand">false</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">false</property>
+              </packing>
+            </child>
+            <child>
+              <object id="superlative-box" class="GtkVBox">
+                <property name="visible">true</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object id="winning-streak-label" class="GtkLabel">
+                    <property name="visible">true</property>
+                    <property name="label">BIGGEST WINNING STREAK</property>
+                  </object>
+                  <packing>
+                    <property name="expand">false</property>
+                  </packing>
+                </child>
+                <child>
+                  <object id="losing-streak-label" class="GtkLabel">
+                    <property name="visible">true</property>
+                    <property name="label">MOST CONSECUTIVE LOSSES</property>
+                  </object>
+                  <packing>
+                    <property name="expand">false</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">false</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">false</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

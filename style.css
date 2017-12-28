@@ -1,0 +1,13 @@
+#logo {
+  padding-top: 20px;
+}
+
+label {
+  font-family: Nunito;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+#stats-label {
+  padding: 0 20px;
+}
