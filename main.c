@@ -7,7 +7,25 @@ start_game_button_clicked(widget, data)
   GtkWidget *widget;
   gpointer data;
 {
-  g_print("Start game!\n");
+  GtkBuilder *builder = GTK_BUILDER(data);
+
+  gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(builder, "start-game")));
+  gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(builder, "stats-grid")));
+  gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "game-grid")));
+  gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder, "main-label")), "GAME");
+}
+
+G_MODULE_EXPORT void
+cancel_game_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  GtkBuilder *builder = GTK_BUILDER(data);
+
+  gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(builder, "game-grid")));
+  gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "start-game")));
+  gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "stats-grid")));
+  gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder, "main-label")), "STATS");
 }
 
 int
@@ -40,7 +58,7 @@ main(argc, argv)
     g_error("invalid builder UI: %s\n", err->message);
     return 1;
   }
-  gtk_builder_connect_signals(builder, NULL);
+  gtk_builder_connect_signals(builder, builder);
 
   /* Connect signal handlers to the constructed widgets */
   window = gtk_builder_get_object(builder, "window");

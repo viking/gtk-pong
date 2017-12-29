@@ -8,6 +8,10 @@ label {
   font-size: x-large;
 }
 
-#stats-label {
+#main-label {
   padding: 0 20px;
+}
+
+label.score {
+  font-size: 800%;
 }
