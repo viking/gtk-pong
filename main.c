@@ -2,6 +2,14 @@
 #include <gtk/gtk.h>
 #include "database.h"
 
+G_MODULE_EXPORT void
+start_game_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  g_print("Start game!\n");
+}
+
 int
 main(argc, argv)
   int argc;
@@ -19,7 +27,7 @@ main(argc, argv)
   screen = gdk_screen_get_default();
   css_provider = gtk_css_provider_new();
   if (!gtk_css_provider_load_from_path(css_provider, "style.css", &err)) {
-    printf("invalid style: %s\n", err->message);
+    g_error("invalid style: %s\n", err->message);
     return 1;
   }
   gtk_style_context_add_provider_for_screen(screen,
@@ -29,18 +37,14 @@ main(argc, argv)
   /* Construct a GtkBuilder instance and load the UI description */
   builder = gtk_builder_new();
   if (!gtk_builder_add_from_file(builder, "builder.ui", &err)) {
-    printf("invalid builder UI: %s\n", err->message);
+    g_error("invalid builder UI: %s\n", err->message);
     return 1;
   }
+  gtk_builder_connect_signals(builder, NULL);
 
   /* Connect signal handlers to the constructed widgets */
   window = gtk_builder_get_object(builder, "window");
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-  database *db = database_open();
-  if (db != NULL) {
-    database_close(db);
-  }
 
   gtk_main();
 

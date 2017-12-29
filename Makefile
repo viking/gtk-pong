@@ -1,5 +1,5 @@
-CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
-LDFLAGS = $(shell pkg-config --libs gtk+-3.0)
+CFLAGS = $(shell pkg-config --cflags gtk+-3.0 gmodule-2.0)
+LDFLAGS = $(shell pkg-config --libs gtk+-3.0 gmodule-2.0)
 LDFLAGS += -lsqlite3
 
 gtk-pong: main.o database.o
@@ -10,3 +10,8 @@ main.o: main.c
 
 database.o: database.c database.h
 	gcc $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f *.o gtk-pong
+
+.PHONY: clean

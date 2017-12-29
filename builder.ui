@@ -5,9 +5,9 @@
     <property name="default-width">1600</property>
     <property name="default-height">900</property>
     <child>
-      <object id="main" class="GtkVBox">
+      <object id="main" class="GtkGrid">
         <property name="visible">true</property>
-        <property name="spacing">20</property>
+        <property name="row-spacing">20</property>
         <child>
           <object id="logo" class="GtkImage">
             <property name="name">logo</property>
@@ -16,108 +16,106 @@
             <property name="hexpand">true</property>
           </object>
           <packing>
-            <property name="expand">false</property>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+            <property name="width">3</property>
           </packing>
         </child>
         <child>
-          <object id="stats-heading" class="GtkHBox">
+          <object id="start-game" class="GtkButton">
+            <property name="visible">true</property>
+            <property name="label">Start game</property>
+            <property name="halign">GTK_ALIGN_CENTER</property>
+            <signal name="clicked" handler="start_game_button_clicked"></signal>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">1</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
+          <object id="stats-sep-1" class="GtkHSeparator">
             <property name="visible">true</property>
             <property name="hexpand">true</property>
-            <child>
-              <object id="stats-sep-1" class="GtkHSeparator">
-                <property name="visible">true</property>
-                <property name="hexpand">true</property>
-              </object>
-              <packing>
-                <property name="expand">false</property>
-              </packing>
-            </child>
-            <child>
-              <object id="stats-label" class="GtkLabel">
-                <property name="name">stats-label</property>
-                <property name="visible">true</property>
-                <property name="label">STATS</property>
-              </object>
-              <packing>
-                <property name="expand">false</property>
-              </packing>
-            </child>
-            <child>
-              <object id="stats-sep-2" class="GtkHSeparator">
-                <property name="visible">true</property>
-                <property name="hexpand">true</property>
-              </object>
-              <packing>
-                <property name="expand">false</property>
-              </packing>
-            </child>
           </object>
           <packing>
-            <property name="expand">false</property>
+            <property name="left-attach">0</property>
+            <property name="top-attach">2</property>
           </packing>
         </child>
         <child>
-          <object id="stats-box" class="GtkHBox">
+          <object id="stats-label" class="GtkLabel">
+            <property name="name">stats-label</property>
             <property name="visible">true</property>
+            <property name="label">STATS</property>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object id="stats-sep-2" class="GtkHSeparator">
+            <property name="visible">true</property>
+            <property name="hexpand">true</property>
+          </object>
+          <packing>
+            <property name="left-attach">2</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object id="stats-grid" class="GtkGrid">
+            <property name="visible">true</property>
+            <property name="column-homogeneous">true</property>
+            <property name="hexpand">true</property>
             <property name="vexpand">true</property>
-            <property name="homogeneous">true</property>
             <child>
-              <object id="leaderboard-box" class="GtkVBox">
+              <object id="leaderboard-label" class="GtkLabel">
                 <property name="visible">true</property>
-                <property name="vexpand">true</property>
-                <child>
-                  <object id="leaderboard-label" class="GtkLabel">
-                    <property name="visible">true</property>
-                    <property name="label">LEADERBOARD</property>
-                  </object>
-                  <packing>
-                    <property name="expand">false</property>
-                  </packing>
-                </child>
-                <child>
-                  <object id="leader-label-1" class="GtkLabel">
-                    <property name="visible">true</property>
-                    <property name="label">1. Viking</property>
-                  </object>
-                  <packing>
-                    <property name="expand">false</property>
-                  </packing>
-                </child>
+                <property name="label">LEADERBOARD</property>
               </object>
               <packing>
-                <property name="expand">false</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
-              <object id="superlative-box" class="GtkVBox">
+              <object id="leader-label-1" class="GtkLabel">
                 <property name="visible">true</property>
-                <property name="vexpand">true</property>
-                <child>
-                  <object id="winning-streak-label" class="GtkLabel">
-                    <property name="visible">true</property>
-                    <property name="label">BIGGEST WINNING STREAK</property>
-                  </object>
-                  <packing>
-                    <property name="expand">false</property>
-                  </packing>
-                </child>
-                <child>
-                  <object id="losing-streak-label" class="GtkLabel">
-                    <property name="visible">true</property>
-                    <property name="label">MOST CONSECUTIVE LOSSES</property>
-                  </object>
-                  <packing>
-                    <property name="expand">false</property>
-                  </packing>
-                </child>
+                <property name="label">1. Viking</property>
               </object>
               <packing>
-                <property name="expand">false</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object id="winning-streak-label" class="GtkLabel">
+                <property name="visible">true</property>
+                <property name="label">BIGGEST WINNING STREAK</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object id="losing-streak-label" class="GtkLabel">
+                <property name="visible">true</property>
+                <property name="label">MOST CONSECUTIVE LOSSES</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="expand">false</property>
+            <property name="left-attach">0</property>
+            <property name="top-attach">3</property>
+            <property name="width">3</property>
           </packing>
         </child>
       </object>
