@@ -15,3 +15,11 @@ label {
 label.score {
   font-size: 800%;
 }
+
+#cancel-game {
+  margin-bottom: 20px;
+}
+
+.cell {
+  font-size: 500%;
+}
