@@ -11,6 +11,9 @@ main.o: main.c
 database.o: database.c database.h
 	gcc $(CFLAGS) -c -o $@ $<
 
+store.o: store.c store.h
+	gcc $(CFLAGS) -c -o $@ $<
+
 clean:
 	rm -f *.o gtk-pong
 
