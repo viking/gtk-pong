@@ -4,12 +4,13 @@
     <property name="title">Pong</property>
     <property name="default-width">1600</property>
     <property name="default-height">900</property>
+    <signal name="destroy" handler="gtk_main_quit"></signal>
     <child>
-      <object id="main" class="GtkGrid">
+      <object id="main-grid" class="GtkGrid">
         <property name="visible">true</property>
         <property name="row-spacing">20</property>
         <child>
-          <object id="logo" class="GtkImage">
+          <object id="logo-image" class="GtkImage">
             <property name="name">logo</property>
             <property name="visible">true</property>
             <property name="file">logo.png</property>
@@ -22,7 +23,7 @@
           </packing>
         </child>
         <child>
-          <object id="start-game" class="GtkButton">
+          <object id="start-game-button" class="GtkButton">
             <property name="visible">true</property>
             <property name="label">Start game</property>
             <property name="halign">GTK_ALIGN_CENTER</property>
@@ -119,6 +120,151 @@
           </packing>
         </child>
         <child>
+          <object id="game-setup-grid" class="GtkGrid">
+            <property name="visible">false</property>
+            <property name="column-homogeneous">true</property>
+            <property name="row-spacing">20</property>
+            <property name="column-spacing">20</property>
+            <property name="halign">GTK_ALIGN_CENTER</property>
+            <child>
+              <object id="select-player-view" class="GtkTreeView">
+                <property name="visible">true</property>
+                <property name="hexpand">false</property>
+                <property name="vexpand">false</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <property name="headers-visible">false</property>
+                <child>
+                  <object id="select-player-view-column-1" class="GtkTreeViewColumn">
+                    <property name="clickable">true</property>
+                    <child>
+                      <object id="select-player-view-column-1-cell" class="GtkCellRendererText" />
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="select-player-view-selection">
+                    <signal name="changed" handler="select_player_view_selection_changed"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object id="create-player-button" class="GtkButton">
+                <property name="visible">true</property>
+                <property name="label">Create player</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <signal name="clicked" handler="create_player_button_clicked"></signal>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object id="cancel-game-setup-button" class="GtkButton">
+                <property name="visible">true</property>
+                <property name="label">Cancel game</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <signal name="clicked" handler="cancel_game_setup_button_clicked"></signal>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">3</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
+          <object id="create-player-grid" class="GtkGrid">
+            <property name="visible">false</property>
+            <property name="row-spacing">20</property>
+            <property name="column-spacing">20</property>
+            <property name="halign">GTK_ALIGN_CENTER</property>
+            <child>
+              <object id="create-player-name-label" class="GtkLabel">
+                <property name="visible">true</property>
+                <property name="label">Name:</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object id="create-player-name-entry" class="GtkEntry">
+                <property name="visible">true</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object id="create-player-gender-label" class="GtkLabel">
+                <property name="visible">true</property>
+                <property name="label">Gender:</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object id="create-player-gender-entry" class="GtkComboBoxText">
+                <property name="visible">true</property>
+                <items>
+                  <item id="male">Male</item>
+                  <item id="female">Female</item>
+                </items>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object id="create-player-save-button" class="GtkButton">
+                <property name="visible">true</property>
+                <property name="label">Create</property>
+                <signal name="clicked" handler="create_player_save_button_clicked"></signal>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object id="cancel-player-create-button" class="GtkButton">
+                <property name="visible">true</property>
+                <property name="label">Cancel</property>
+                <signal name="clicked" handler="cancel_player_create_button_clicked"></signal>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">3</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
           <object id="game-grid" class="GtkGrid">
             <property name="visible">false</property>
             <property name="hexpand">true</property>
@@ -126,7 +272,7 @@
             <property name="column-homogeneous">true</property>
             <property name="row-spacing">20</property>
             <child>
-              <object id="player1-label" class="GtkLabel">
+              <object id="game-player-1-name-label" class="GtkLabel">
                 <property name="visible">true</property>
                 <property name="hexpand">true</property>
                 <property name="label">Player 1</property>
@@ -137,7 +283,7 @@
               </packing>
             </child>
             <child>
-              <object id="player1-score" class="GtkLabel">
+              <object id="game-player-1-score-label" class="GtkLabel">
                 <property name="visible">true</property>
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
@@ -152,7 +298,7 @@
               </packing>
             </child>
             <child>
-              <object id="player2-label" class="GtkLabel">
+              <object id="game-player-2-name-label" class="GtkLabel">
                 <property name="visible">true</property>
                 <property name="hexpand">true</property>
                 <property name="label">Player 2</property>
@@ -163,7 +309,7 @@
               </packing>
             </child>
             <child>
-              <object id="player2-score" class="GtkLabel">
+              <object id="game-player-2-score-label" class="GtkLabel">
                 <property name="visible">true</property>
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
@@ -178,7 +324,7 @@
               </packing>
             </child>
             <child>
-              <object id="cancel-game" class="GtkButton">
+              <object id="cancel-game-button" class="GtkButton">
                 <property name="visible">true</property>
                 <property name="label">Cancel game</property>
                 <property name="halign">GTK_ALIGN_CENTER</property>
