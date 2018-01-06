@@ -109,3 +109,45 @@ players_store_show_all(store)
     valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
   }
 }
+
+void
+players_store_print(store)
+  GtkListStore *store;
+{
+  GtkTreeIter iter;
+  gboolean valid = FALSE;
+  gint id = 0, elo = 0, play_count = 0;
+  gchar *rfid = NULL, *name = NULL, *gender = NULL, *image = NULL;
+  gboolean visible = FALSE;
+
+  valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+  g_print("players store\n=========\n%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+      "id", "rfid", "name", "gender", "elo", "image", "play_count", "visible");
+
+  while (valid) {
+    gtk_tree_model_get(GTK_TREE_MODEL(store), &iter,
+        0, &id,
+        1, &rfid,
+        2, &name,
+        3, &gender,
+        4, &elo,
+        5, &image,
+        6, &play_count,
+        7, &visible,
+        -1);
+    g_print("%d\t%s\t%s\t%s\t%d\t%s\t%d\t%s\n",
+        id,
+        rfid == NULL ? "NULL" : rfid,
+        name == NULL ? "NULL" : name,
+        gender == NULL ? "NULL" : gender,
+        elo,
+        image == NULL ? "NULL" : image,
+        play_count,
+        visible ? "TRUE" : "FALSE");
+    if (rfid != NULL) g_free(rfid);
+    if (name != NULL) g_free(name);
+    if (gender != NULL) g_free(gender);
+    if (image != NULL) g_free(image);
+    valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
+  }
+}

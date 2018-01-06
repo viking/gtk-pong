@@ -159,8 +159,8 @@ application_transition(app, new_state)
     }
     else if (new_state == PONG_SELECT_PLAYER_2) {
       /* PONG_SELECT_PLAYER_1 -> PONG_SELECT_PLAYER_2 */
-      gtk_label_set_text(app->main_label, "SELECT PLAYER 2");
       players_store_hide_player_with_id(app->players_store, app->player_1_id);
+      gtk_label_set_text(app->main_label, "SELECT PLAYER 2");
       ok = 1;
     }
     else if (new_state == PONG_START) {
@@ -252,6 +252,36 @@ start_game_button_clicked(widget, data)
 }
 
 G_MODULE_EXPORT void
+select_player_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  application *app = NULL;
+  GtkTreeSelection *selection = NULL;
+  GtkTreeIter iter;
+  GtkTreeModel *model = NULL;
+  gint id = 0;
+  const gchar *name = NULL;
+
+  app = (application *)data;
+  selection = gtk_tree_view_get_selection(app->select_player_view);
+  if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+    gtk_tree_model_get(model, &iter, 0, &id, 2, &name, -1);
+    if (app->state == PONG_SELECT_PLAYER_1) {
+      app->player_1_id = id;
+      app->player_1_name = name;
+      application_transition(app, PONG_SELECT_PLAYER_2);
+    }
+    else if (app->state == PONG_SELECT_PLAYER_2) {
+      app->player_2_id = id;
+      app->player_2_name = name;
+      application_transition(app, PONG_GAME_START);
+    }
+    gtk_tree_selection_unselect_all(selection);
+  }
+}
+
+G_MODULE_EXPORT void
 create_player_button_clicked(widget, data)
   GtkWidget *widget;
   gpointer data;
@@ -299,33 +329,6 @@ cancel_game_setup_button_clicked(widget, data)
   gpointer data;
 {
   application_transition((application *)data, PONG_START);
-}
-
-G_MODULE_EXPORT void
-select_player_view_selection_changed(selection, data)
-  GtkTreeSelection *selection;
-  gpointer data;
-{
-  application *app = NULL;
-  GtkTreeIter iter;
-  GtkTreeModel *model = NULL;
-  gint id = 0;
-  const gchar *name = NULL;
-
-  app = (application *)data;
-  if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-    gtk_tree_model_get(model, &iter, 0, &id, 2, &name, -1);
-    if (app->state == PONG_SELECT_PLAYER_1) {
-      app->player_1_id = id;
-      app->player_1_name = name;
-      application_transition(app, PONG_SELECT_PLAYER_2);
-    }
-    else if (app->state == PONG_SELECT_PLAYER_2) {
-      app->player_2_id = id;
-      app->player_2_name = name;
-      application_transition(app, PONG_GAME_START);
-    }
-  }
 }
 
 G_MODULE_EXPORT void

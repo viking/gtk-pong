@@ -16,7 +16,7 @@ label.score {
   font-size: 800%;
 }
 
-#cancel-game {
+button.cancel-game {
   margin-bottom: 20px;
 }
 
