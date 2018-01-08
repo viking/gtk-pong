@@ -148,42 +148,36 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">0</property>
-                <property name="width">3</property>
               </packing>
             </child>
             <child>
-              <object id="select-player-button" class="GtkButton">
+              <object id="game-setup-button-box" class="GtkButtonBox">
                 <property name="visible">true</property>
-                <property name="label">Select player</property>
                 <property name="halign">GTK_ALIGN_CENTER</property>
-                <signal name="clicked" handler="select_player_button_clicked"></signal>
+                <child>
+                  <object id="select-player-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Select player</property>
+                    <signal name="clicked" handler="select_player_button_clicked"></signal>
+                  </object>
+                </child>
+                <child>
+                  <object id="create-player-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Create player</property>
+                    <signal name="clicked" handler="create_player_button_clicked"></signal>
+                  </object>
+                </child>
+                <child>
+                  <object id="game-setup-back-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Back</property>
+                    <signal name="clicked" handler="game_setup_back_button_clicked"></signal>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object id="create-player-button" class="GtkButton">
-                <property name="visible">true</property>
-                <property name="label">Create player</property>
-                <property name="halign">GTK_ALIGN_CENTER</property>
-                <signal name="clicked" handler="create_player_button_clicked"></signal>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object id="cancel-game-setup-button" class="GtkButton">
-                <property name="visible">true</property>
-                <property name="label">Cancel game</property>
-                <property name="halign">GTK_ALIGN_CENTER</property>
-                <signal name="clicked" handler="cancel_game_setup_button_clicked"></signal>
-              </object>
-              <packing>
-                <property name="left-attach">2</property>
                 <property name="top-attach">1</property>
               </packing>
             </child>
@@ -254,10 +248,10 @@
               </packing>
             </child>
             <child>
-              <object id="cancel-player-create-button" class="GtkButton">
+              <object id="player-create-back-button" class="GtkButton">
                 <property name="visible">true</property>
-                <property name="label">Cancel</property>
-                <signal name="clicked" handler="cancel_player_create_button_clicked"></signal>
+                <property name="label">Back</property>
+                <signal name="clicked" handler="player_create_back_button_clicked"></signal>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -305,6 +299,17 @@
               </packing>
             </child>
             <child>
+              <object id="game-player-1-serving-label" class="GtkLabel">
+                <property name="visible">false</property>
+                <property name="hexpand">true</property>
+                <property name="label">CURRENTLY SERVING</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
               <object id="game-player-2-name-label" class="GtkLabel">
                 <property name="visible">true</property>
                 <property name="hexpand">true</property>
@@ -331,16 +336,71 @@
               </packing>
             </child>
             <child>
-              <object id="cancel-game-button" class="GtkButton">
+              <object id="game-player-2-serving-label" class="GtkLabel">
+                <property name="visible">false</property>
+                <property name="hexpand">true</property>
+                <property name="label">CURRENTLY SERVING</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object id="game-player-1-button" class="GtkButton">
                 <property name="visible">true</property>
-                <property name="label">Cancel game</property>
+                <property name="label">Serve</property>
                 <property name="halign">GTK_ALIGN_CENTER</property>
-                <signal name="clicked" handler="cancel_game_button_clicked"></signal>
-                <style><class name="cancel-game" /></style>
+                <signal name="clicked" handler="game_player_1_button_clicked"></signal>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">2</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object id="game-player-2-button" class="GtkButton">
+                <property name="visible">true</property>
+                <property name="label">Serve</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <signal name="clicked" handler="game_player_2_button_clicked"></signal>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object id="game-button-box" class="GtkButtonBox">
+                <property name="visible">true</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <property name="layout-style">GTK_BUTTONBOX_CENTER</property>
+                <property name="name">game-button-box</property>
+                <child>
+                  <object id="game-back-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Back</property>
+                    <signal name="clicked" handler="game_back_button_clicked"></signal>
+                  </object>
+                </child>
+                <child>
+                  <object id="game-rematch-button" class="GtkButton">
+                    <property name="visible">false</property>
+                    <property name="label">Rematch</property>
+                    <signal name="clicked" handler="game_rematch_button_clicked"></signal>
+                  </object>
+                </child>
+                <child>
+                  <object id="game-finish-button" class="GtkButton">
+                    <property name="visible">false</property>
+                    <property name="label">Finish</property>
+                    <signal name="clicked" handler="game_finish_button_clicked"></signal>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>

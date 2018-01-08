@@ -11,7 +11,9 @@ enum {
   PONG_CREATE_PLAYER_1,
   PONG_SELECT_PLAYER_2,
   PONG_CREATE_PLAYER_2,
-  PONG_GAME_START
+  PONG_GAME_INIT,
+  PONG_GAME_PLAY,
+  PONG_GAME_END
 };
 
 /* application */
@@ -26,6 +28,11 @@ typedef struct {
   int player_2_id;
   const gchar *player_2_name;
   int player_2_score;
+  int game_type;
+  int game_points[255];
+  int game_server;
+  int game_turn;
+  int game_winner;
 
   /* gtk pointers */
   GtkBuilder *builder;
@@ -41,9 +48,17 @@ typedef struct {
   GtkComboBoxText *create_player_gender_entry;
   GtkLabel *game_player_1_name_label;
   GtkLabel *game_player_1_score_label;
+  GtkLabel *game_player_1_serving_label;
+  GtkButton *game_player_1_button;
   GtkLabel *game_player_2_name_label;
   GtkLabel *game_player_2_score_label;
+  GtkLabel *game_player_2_serving_label;
+  GtkButton *game_player_2_button;
+  GtkButton *game_rematch_button;
+  GtkButton *game_finish_button;
 } application;
+
+static void application_transition(application *app, int new_state);
 
 static int
 application_create_player(app, result_id, result_name)
@@ -90,7 +105,7 @@ application_create_player(app, result_id, result_name)
 }
 
 static void
-application_update_scores(app)
+application_update_game(app)
   application *app;
 {
   gchar *score = NULL;
@@ -102,6 +117,19 @@ application_update_scores(app)
   score = g_strdup_printf("%d", app->player_2_score);
   gtk_label_set_text(app->game_player_2_score_label, score);
   g_free(score);
+
+  if (app->game_server == 0) {
+    gtk_widget_hide(GTK_WIDGET(app->game_player_1_serving_label));
+    gtk_widget_hide(GTK_WIDGET(app->game_player_2_serving_label));
+  }
+  else if (app->game_server == 1) {
+    gtk_widget_hide(GTK_WIDGET(app->game_player_2_serving_label));
+    gtk_widget_show(GTK_WIDGET(app->game_player_1_serving_label));
+  }
+  else if (app->game_server == 2) {
+    gtk_widget_hide(GTK_WIDGET(app->game_player_1_serving_label));
+    gtk_widget_show(GTK_WIDGET(app->game_player_2_serving_label));
+  }
 }
 
 static void
@@ -113,8 +141,64 @@ application_start_game(app)
   gtk_label_set_text(app->main_label, "GAME");
   gtk_label_set_text(app->game_player_1_name_label, app->player_1_name);
   gtk_label_set_text(app->game_player_2_name_label, app->player_2_name);
-  application_update_scores(app);
+  application_update_game(app);
   gtk_widget_show(GTK_WIDGET(app->game_grid));
+}
+
+static void
+application_add_point(app, which)
+  application *app;
+  int which;
+{
+  int swap_servers = 0, finish_game = 0;
+
+  app->game_points[app->game_turn] = which;
+  app->game_turn++;
+  if (which == 1) {
+    app->player_1_score++;
+  }
+  else {
+    app->player_2_score++;
+  }
+
+  if (app->player_1_score >= app->game_type && (app->player_1_score - app->player_2_score) >= 2) {
+    /* player 1 wins */
+    app->game_winner = 1;
+    finish_game = 1;
+  }
+  else if (app->player_2_score >= app->game_type && (app->player_2_score - app->player_1_score) >= 2) {
+    /* player 2 wins */
+    app->game_winner = 2;
+    finish_game = 1;
+  }
+  else if (app->game_type == 21) {
+    if (app->game_turn < 40) {
+      swap_servers = (app->game_turn % 5 == 0);
+    }
+    else {
+      swap_servers = (app->game_turn % 2 == 0);
+    }
+  }
+  else if (app->game_type == 11) {
+    if (app->game_turn < 20) {
+      swap_servers = (app->game_turn % 2 == 0);
+    } else {
+      swap_servers = 1;
+    }
+  }
+  if (swap_servers) {
+    app->game_server = app->game_server == 1 ? 2 : 1;
+  }
+  application_update_game(app);
+  if (finish_game) {
+    application_transition(app, PONG_GAME_END);
+  }
+}
+
+static void
+application_rollback_point(app)
+  application *app;
+{
 }
 
 static void
@@ -204,24 +288,22 @@ application_transition(app, new_state)
       gtk_widget_show(GTK_WIDGET(app->create_player_grid));
       ok = 1;
     }
-    else if (new_state == PONG_GAME_START) {
-      /* PONG_SELECT_PLAYER_2 -> PONG_GAME_START */
+    else if (new_state == PONG_GAME_INIT) {
+      /* PONG_SELECT_PLAYER_2 -> PONG_GAME_INIT */
       gtk_widget_hide(GTK_WIDGET(app->game_setup_grid));
       application_start_game(app);
       ok = 1;
     }
-    else if (new_state == PONG_START) {
-      /* PONG_SELECT_PLAYER_2 -> PONG_START */
-      gtk_label_set_text(app->main_label, "STATS");
-      gtk_widget_hide(GTK_WIDGET(app->game_setup_grid));
-      gtk_widget_show(GTK_WIDGET(app->stats_grid));
-      gtk_widget_show(GTK_WIDGET(app->start_game_button));
+    else if (new_state == PONG_SELECT_PLAYER_1) {
+      /* PONG_SELECT_PLAYER_2 -> PONG_SELECT_PLAYER_1 */
+      gtk_label_set_text(app->main_label, "SELECT PLAYER 1");
+      players_store_show_all(app->players_store);
       ok = 1;
     }
   }
   else if (app->state == PONG_CREATE_PLAYER_2) {
-    if (new_state == PONG_GAME_START) {
-      /* PONG_CREATE_PLAYER_2 -> PONG_GAME_START */
+    if (new_state == PONG_GAME_INIT) {
+      /* PONG_CREATE_PLAYER_2 -> PONG_GAME_INIT */
       result = application_create_player(app, &player_id, &player_name);
       if (result != 0) {
         return;
@@ -231,6 +313,34 @@ application_transition(app, new_state)
 
       gtk_widget_hide(GTK_WIDGET(app->create_player_grid));
       application_start_game(app);
+      ok = 1;
+    }
+  }
+  else if (app->state == PONG_GAME_INIT) {
+    if (new_state == PONG_GAME_PLAY) {
+      gtk_button_set_label(app->game_player_1_button, "Point");
+      gtk_button_set_label(app->game_player_2_button, "Point");
+      ok = 1;
+    }
+    else if (new_state == PONG_SELECT_PLAYER_2) {
+      gtk_label_set_text(app->main_label, "SELECT PLAYER 2");
+      gtk_widget_hide(GTK_WIDGET(app->game_grid));
+      gtk_widget_show(GTK_WIDGET(app->game_setup_grid));
+      ok = 1;
+    }
+  }
+  else if (app->state == PONG_GAME_PLAY) {
+    if (new_state == PONG_GAME_INIT) {
+      gtk_button_set_label(app->game_player_1_button, "Serve");
+      gtk_button_set_label(app->game_player_2_button, "Serve");
+      ok = 1;
+    }
+    else if (new_state == PONG_GAME_END) {
+      gtk_label_set_text(app->main_label, "GAME OVER");
+      gtk_widget_hide(GTK_WIDGET(app->game_player_1_button));
+      gtk_widget_hide(GTK_WIDGET(app->game_player_2_button));
+      gtk_widget_show(GTK_WIDGET(app->game_rematch_button));
+      gtk_widget_show(GTK_WIDGET(app->game_finish_button));
       ok = 1;
     }
   }
@@ -275,7 +385,7 @@ select_player_button_clicked(widget, data)
     else if (app->state == PONG_SELECT_PLAYER_2) {
       app->player_2_id = id;
       app->player_2_name = name;
-      application_transition(app, PONG_GAME_START);
+      application_transition(app, PONG_GAME_INIT);
     }
     gtk_tree_selection_unselect_all(selection);
   }
@@ -305,12 +415,12 @@ create_player_save_button_clicked(widget, data)
     application_transition((application *)data, PONG_SELECT_PLAYER_2);
   }
   else if (app->state == PONG_CREATE_PLAYER_2) {
-    application_transition((application *)data, PONG_GAME_START);
+    application_transition((application *)data, PONG_GAME_INIT);
   }
 }
 
 G_MODULE_EXPORT void
-cancel_player_create_button_clicked(widget, data)
+player_create_back_button_clicked(widget, data)
   GtkWidget *widget;
   gpointer data;
 {
@@ -324,22 +434,77 @@ cancel_player_create_button_clicked(widget, data)
 }
 
 G_MODULE_EXPORT void
-cancel_game_setup_button_clicked(widget, data)
+game_setup_back_button_clicked(widget, data)
   GtkWidget *widget;
   gpointer data;
 {
-  application_transition((application *)data, PONG_START);
+  application *app = (application *)data;
+  if (app->state == PONG_SELECT_PLAYER_2) {
+    application_transition((application *)data, PONG_SELECT_PLAYER_1);
+  }
+  else if (app->state == PONG_SELECT_PLAYER_1) {
+    application_transition((application *)data, PONG_START);
+  }
 }
 
 G_MODULE_EXPORT void
-cancel_game_button_clicked(widget, data)
+game_player_1_button_clicked(widget, data)
   GtkWidget *widget;
   gpointer data;
 {
-  /*
-  GtkBuilder *builder = GTK_BUILDER(data);
-  cancel_game(builder);
-  */
+  application *app = (application *)data;
+  if (app->state == PONG_GAME_INIT) {
+    app->game_server = 1;
+    application_transition(app, PONG_GAME_PLAY);
+  }
+  else if (app->state == PONG_GAME_PLAY) {
+    application_add_point(app, 1);
+  }
+}
+
+G_MODULE_EXPORT void
+game_player_2_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  application *app = (application *)data;
+  if (app->state == PONG_GAME_INIT) {
+    app->game_server = 2;
+    application_transition(app, PONG_GAME_PLAY);
+  }
+  else if (app->state == PONG_GAME_PLAY) {
+    application_add_point(app, 2);
+  }
+}
+
+G_MODULE_EXPORT void
+game_back_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  application *app = (application *)data;
+  if (app->state == PONG_GAME_INIT) {
+    application_transition(app, PONG_SELECT_PLAYER_2);
+  }
+  else if (app->state == PONG_GAME_PLAY) {
+    application_rollback_point(app);
+  }
+}
+
+G_MODULE_EXPORT void
+game_rematch_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  application *app = (application *)data;
+}
+
+G_MODULE_EXPORT void
+game_finish_button_clicked(widget, data)
+  GtkWidget *widget;
+  gpointer data;
+{
+  application *app = (application *)data;
 }
 
 int
@@ -353,6 +518,7 @@ main(argc, argv)
   GObject *window = NULL;
   GError *err = NULL;
   application *app = NULL;
+  int i = 0;
 
   gtk_init(&argc, &argv);
 
@@ -381,6 +547,13 @@ main(argc, argv)
   app->player_1_score = 0;
   app->player_2_id = 0;
   app->player_2_score = 0;
+  app->game_type = 21;
+  app->game_server = 0;
+  app->game_turn = 0;
+  app->game_winner = 0;
+  for (i = 0; i < 255; i++) {
+    app->game_points[i] = 0;
+  }
 
   app->builder = builder;
   app->main_label = GTK_LABEL(gtk_builder_get_object(builder, "main-label"));
@@ -396,8 +569,14 @@ main(argc, argv)
   app->create_player_gender_entry = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "create-player-gender-entry"));
   app->game_player_1_name_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-1-name-label"));
   app->game_player_1_score_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-1-score-label"));
+  app->game_player_1_serving_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-1-serving-label"));
+  app->game_player_1_button = GTK_BUTTON(gtk_builder_get_object(builder, "game-player-1-button"));
   app->game_player_2_name_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-2-name-label"));
   app->game_player_2_score_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-2-score-label"));
+  app->game_player_2_serving_label = GTK_LABEL(gtk_builder_get_object(builder, "game-player-2-serving-label"));
+  app->game_player_2_button = GTK_BUTTON(gtk_builder_get_object(builder, "game-player-2-button"));
+  app->game_rematch_button = GTK_BUTTON(gtk_builder_get_object(builder, "game-rematch-button"));
+  app->game_finish_button = GTK_BUTTON(gtk_builder_get_object(builder, "game-finish-button"));
 
   gtk_builder_connect_signals(builder, app);
 
