@@ -320,6 +320,7 @@ application_transition(app, new_state)
     if (new_state == PONG_GAME_PLAY) {
       gtk_button_set_label(app->game_player_1_button, "Point");
       gtk_button_set_label(app->game_player_2_button, "Point");
+      application_update_game(app);
       ok = 1;
     }
     else if (new_state == PONG_SELECT_PLAYER_2) {
