@@ -237,25 +237,28 @@
               </packing>
             </child>
             <child>
-              <object id="create-player-save-button" class="GtkButton">
+              <object id="create-player-button-box" class="GtkButtonBox">
                 <property name="visible">true</property>
-                <property name="label">Create</property>
-                <signal name="clicked" handler="create_player_save_button_clicked"></signal>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <child>
+                  <object id="create-player-save-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Create</property>
+                    <signal name="clicked" handler="create_player_save_button_clicked"></signal>
+                  </object>
+                </child>
+                <child>
+                  <object id="player-create-back-button" class="GtkButton">
+                    <property name="visible">true</property>
+                    <property name="label">Back</property>
+                    <signal name="clicked" handler="player_create_back_button_clicked"></signal>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object id="player-create-back-button" class="GtkButton">
-                <property name="visible">true</property>
-                <property name="label">Back</property>
-                <signal name="clicked" handler="player_create_back_button_clicked"></signal>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">2</property>
+                <property name="width">2</property>
               </packing>
             </child>
           </object>
